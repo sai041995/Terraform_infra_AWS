@@ -1,12 +1,14 @@
-- 
+- All the requiremnts is successfully achieved and the tasks are created as fallows
 -  Created a Provider for AWS.
 - Created a VPC (Virtual Private Cloud in AWS).
 - Created a Public Subnet with auto public IP Assignment enabled
-- Created a Private Subnet 
+- Created a Private Subnet fordeploying data base servers
 - Created an Internet Gateway for Instances in the public subnet to access the Internet.
 - Created a routing table consisting of the information of Internet Gateway.
 - Associate the routing table to the Public Subnet to provide the Internet Gateway address.
 - Creating an Elastic IP for the NAT Gateway.
-- Creating a NAT Gateway for MySQL instance to access the Internet (performing source NAT).
-- Creating a route table for the Nat Gateway Access which has to be associated with MySQL Instance.
-- Associating the above-created route table with MySQL instance.
+- Creating a NAT Gateway for instance in private subnet (No instances created in case) to access the Internet (performing source NAT).
+- Creating a route table for the Nat Gateway Access
+- Created a ec2 instances with webserver configured 
+- Attached a security group with traffic allow port 80(HTTP)
+- ALB also is created and configured to the ec2 instace so that user can accsess
