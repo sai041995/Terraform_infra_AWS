@@ -1,3 +1,12 @@
-- Creted
-- dsfd
-- ddd
+- 
+-  Created a Provider for AWS.
+- Created a VPC (Virtual Private Cloud in AWS).
+- Created a Public Subnet with auto public IP Assignment enabled
+- Created a Private Subnet 
+- Created an Internet Gateway for Instances in the public subnet to access the Internet.
+- Created a routing table consisting of the information of Internet Gateway.
+- Associate the routing table to the Public Subnet to provide the Internet Gateway address.
+- Creating an Elastic IP for the NAT Gateway.
+- Creating a NAT Gateway for MySQL instance to access the Internet (performing source NAT).
+- Creating a route table for the Nat Gateway Access which has to be associated with MySQL Instance.
+- Associating the above-created route table with MySQL instance.
