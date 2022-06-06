@@ -233,6 +233,9 @@ listener {
   }
 }
 
+### Created Launch configuration for the auto scaling group
+
+
 resource "aws_launch_configuration" "challenge_configuration" {
   name_prefix = "challenge_configuration"
 image_id = "ami-0022f774911c1d690" 
@@ -254,6 +257,8 @@ lifecycle {
     create_before_destroy = true
   }
 }
+
+### Created a autoscaling group to instances or webservers to highly available all the time
 
 resource "aws_autoscaling_group" "challenge_web_server" {
   name = "${aws_launch_configuration.challenge_configuration.name}-asg"
