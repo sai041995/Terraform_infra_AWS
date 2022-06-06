@@ -167,30 +167,7 @@ resource "aws_route_table_association" "Nat-Gateway-RT-Association" {
 }
 
 
-### Creating instance to install webserver and deployed in public subnet to access it with sample user data
 
-resource "aws_instance" "Challenge_Instance" {
-  ami           = "ami-06eecef118bbf9259" 
-  instance_type = "t2.micro"
-  subnet_id = aws_subnet.pub_subnet_east-1a.id
-  vpc_security_group_ids = [aws_security_group.challange_sg.id]
-  user_data = <<EOF
-#!/bin/bash
-sudo su
-yum update -y
-yum install httpd -y
-cd /var/www/html
-echo "Cambrium challenge" > index.html
-service httpd start
-chkconfig httpd on
-EOF
-   
-   tags = {
-      Name = "Challenge_Instance"
-      Owner = "me"
-   }
-
-}
 
 ### Security group for a webserver which allows traffic and to ssh 
 
@@ -201,7 +178,7 @@ resource "aws_security_group" "challange_sg"{
     aws_subnet.pub_subnet_east-1a
   ]
   name = "challange_sg"
-  description = "test"
+  description = "test1"
   vpc_id = aws_vpc.challenge_vpc.id
   ingress{
      from_port = 80
@@ -235,35 +212,79 @@ resource "aws_security_group" "challange_sg"{
 
 ### Created Load balancer which traffic will go trough it to a webserver
 
-resource "aws_lb_target_group" "challangetg" {
-  name        = "challangetg"
-  port        = 80
-  target_type = "instance"
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.challenge_vpc.id
+resource "aws_elb" "challengeelb" {
+  name = "challengeelb"
+  security_groups = [aws_security_group.challange_sg.id]
+  subnets = [aws_subnet.pub_subnet_east-1a.id,aws_subnet.pvt_subnet_east-1b.id]
+  
+cross_zone_load_balancing   = true
+health_check {
+    healthy_threshold = 2
+    unhealthy_threshold = 2
+    timeout = 3
+    interval = 30
+    target = "HTTP:80/"
+  }
+listener {
+    lb_port = 80
+    lb_protocol = "http"
+    instance_port = "80"
+    instance_protocol = "http"
+  }
 }
 
-resource "aws_alb_target_group_attachment" "tgattachment" {
-  count            = 1
-  target_group_arn = aws_lb_target_group.challangetg.arn
-  target_id        = aws_instance.Challenge_Instance.id
+resource "aws_launch_configuration" "challenge_configuration" {
+  name_prefix = "challenge_configuration"
+image_id = "ami-0022f774911c1d690" 
+  instance_type = "t2.micro"
+  
+security_groups = [aws_security_group.challange_sg.id]
+  associate_public_ip_address = true
+  user_data = <<EOF
+#!/bin/bash
+sudo su
+yum update -y
+yum install httpd -y
+cd /var/www/html
+echo "Cambrium challenge" > index.html
+service httpd start
+chkconfig httpd on
+EOF
+lifecycle {
+    create_before_destroy = true
+  }
 }
 
-resource "aws_lb" "challengelb" {
-  name               = "challengelb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.challange_sg.id, ]
-  subnets            = [aws_subnet.pub_subnet_east-1a.id, aws_subnet.pvt_subnet_east-1b.id]
-}
-
-resource "aws_lb_listener" "challenge_listener"{
-  load_balancer_arn = aws_lb.challengelb.arn
-  port =80
-  protocol = "HTTP"
-  default_action {
-     type = "forward"
-     target_group_arn = aws_lb_target_group.challangetg.arn
-         
-       }
+resource "aws_autoscaling_group" "challenge_web_server" {
+  name = "${aws_launch_configuration.challenge_configuration.name}-asg"
+  min_size             = 1
+  desired_capacity     = 1
+  max_size             = 2
+  
+  health_check_type    = "ELB"
+  load_balancers = [
+    "${aws_elb.challengeelb.id}"
+  ]
+launch_configuration = "${aws_launch_configuration.challenge_configuration.name}"
+enabled_metrics = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupTotalInstances"
+  ]
+metrics_granularity = "1Minute"
+vpc_zone_identifier  = [
+    "${aws_subnet.pub_subnet_east-1a.id}",
+    "${aws_subnet.pvt_subnet_east-1b.id}"
+  ]
+# Required to redeploy without an outage.
+  lifecycle {
+    create_before_destroy = true
+  }
+tag {
+    key                 = "Name"
+    value               = "web"
+    propagate_at_launch = true
+  }
 }
