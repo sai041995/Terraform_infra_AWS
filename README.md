@@ -11,4 +11,4 @@
 - Creating a route table for the Nat Gateway Access
 - Created a ec2 instances with webserver configured 
 - Attached a security group with traffic allow port 80(HTTP)
-- ALB also is created and configured to the ec2 instace so that user can accsess
+- Auto scaling group was configured with load balancer to acheive high availability
