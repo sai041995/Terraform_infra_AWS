@@ -16,7 +16,7 @@ resource "aws_vpc" "challenge_vpc" {
   }
 }
 
-###Create a Public Subnet with auto public IP Assignment enabled in custom VPC to host webserver which can publicly accesble
+###Created a Public Subnet with auto public IP Assignment enabled in custom VPC to host webserver which can publicly accesble
 
 resource "aws_subnet" "pub_subnet_east-1a" {
   depends_on = [
@@ -32,7 +32,7 @@ resource "aws_subnet" "pub_subnet_east-1a" {
   }
 }
 
-###Create a Private Subnet in case you need batabases server which can only access via bastion
+###Created a Private Subnet in case you need batabases server which can only access via bastion
 
 resource "aws_subnet" "pvt_subnet_east-1b" {
   depends_on = [
@@ -48,7 +48,7 @@ resource "aws_subnet" "pvt_subnet_east-1b" {
   }
 }
 
-###Create Internet gateway for the a vpc for the internet
+###Created Internet gateway for the a vpc for the internet
 
 resource "aws_internet_gateway" "challenge_IG" {
   depends_on = [
