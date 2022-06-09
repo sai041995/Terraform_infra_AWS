@@ -6,9 +6,9 @@
 - Created an Internet Gateway for Instances in the public subnet to access the Internet.
 - Created a routing table consisting of the information of Internet Gateway.
 - Associate the routing table to the Public Subnet to provide the Internet Gateway address.
-- Creating an Elastic IP for the NAT Gateway.
-- Creating a NAT Gateway for instance in private subnet (No instances created in case) to access the Internet (performing source NAT).
-- Creating a route table for the Nat Gateway Access
+- Created an Elastic IP for the NAT Gateway.
+- Created a NAT Gateway for instance in private subnet (No instances created in case) to access the Internet (performing source NAT).
+- Created a route table for the Nat Gateway Access
 - Created a ec2 instances with webserver configured 
 - Attached a security group with traffic allow port 80(HTTP)
 - Auto scaling group was configured with load balancer to acheive high availability
