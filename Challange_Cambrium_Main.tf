@@ -223,7 +223,7 @@ health_check {
     unhealthy_threshold = 2
     timeout = 3
     interval = 30
-    target = "HTTP:80/"
+    target = "HTTP:80/index.html"
   }
 listener {
     lb_port = 80
