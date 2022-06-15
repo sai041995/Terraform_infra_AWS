@@ -1,9 +1,9 @@
 
-### since iam using AWS so its act as a provider and user cambruim is created using AWS console as a user
+### since iam using AWS so its act as a provider and user sai is created using AWS console as a user
 
 provider "aws" {
   region                  = "us-east-1"
-  profile                 = "cambrium"
+  profile                 = "sai"
 }
 
 ###Creating a VPC used IP Range for the VPC
